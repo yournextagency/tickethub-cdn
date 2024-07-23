@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: echo "::set-output name=BRANCH_NAME::${GITHUB_REF#refs/heads/}"
+
+      - name: Use branch name
+        run: echo ${{ steps.extract_branch.outputs.BRANCH_NAME }}
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -18,9 +25,10 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ steps.extract_branch.outputs.BRANCH_NAME }}
         with:
-          tag_name: ${{ github.event.head_commit.message }}
-          release_name: ${{ github.event.head_commit.message }}
+          tag_name: ${{ env.BRANCH_NAME }}
+          release_name: ${{ env.BRANCH_NAME }}
           body: |
             ${{ github.event.head_commit.message }}
           draft: false
