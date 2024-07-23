@@ -12,10 +12,7 @@ jobs:
     steps:
       - name: Extract branch name
         id: extract_branch
-        run: echo "::set-output name=BRANCH_NAME::${GITHUB_REF#refs/heads/}"
-
-      - name: Use branch name
-        run: echo ${{ steps.extract_branch.outputs.BRANCH_NAME }}
+        run: echo "::set-output name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | cut -d'/' -f2)"
 
       - name: Checkout repository
         uses: actions/checkout@v2
